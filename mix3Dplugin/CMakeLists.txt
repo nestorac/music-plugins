@@ -23,12 +23,12 @@ juce_add_plugin(Mix3DPlugin
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE
-    VST3_CATEGORY "Fx"
+    VST3_CATEGORIES "Fx"
     FORMATS VST3
     PRODUCT_NAME "Mix3DPlugin"
     SOURCES
-      Source/PluginProcessor.cpp
-      Source/PluginEditor.cpp
+      PluginProcessor.cpp
+      PluginEditor.cpp
 )
 
 # Add your plugin code into the SharedCode library
