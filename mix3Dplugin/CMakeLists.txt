@@ -15,9 +15,10 @@ pkg_check_modules(WEBKIT2GTK REQUIRED webkit2gtk-4.1)
 # Ensure the WebKit include dirs are visible to all targets
 include_directories(${WEBKIT2GTK_INCLUDE_DIRS})
 
+find_package(CURL REQUIRED)
 
 juce_add_plugin(Mix3DPlugin
-    COMPANY_NAME "YourCompany"
+    COMPANY_NAME "Tekleo"
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
@@ -25,23 +26,41 @@ juce_add_plugin(Mix3DPlugin
     VST3_CATEGORY "Fx"
     FORMATS VST3
     PRODUCT_NAME "Mix3DPlugin"
+    SOURCES
+      Source/PluginProcessor.cpp
+      Source/PluginEditor.cpp
 )
+
+# Add your plugin code into the SharedCode library
+#target_sources(Mix3DPlugin PRIVATE
+#    Source/PluginProcessor.cpp
+#    Source/PluginEditor.cpp
+#)
 
 # ATENCIÓN: Solo tus fuentes aquí
-target_sources(Mix3DPlugin PRIVATE
-    Source/PluginProcessor.cpp
-    Source/PluginProcessor.h
-    Source/PluginEditor.cpp
-    Source/PluginEditor.h
-)
+#target_sources(Mix3DPlugin PRIVATE
+#    Source/PluginProcessor.cpp
+#    Source/PluginProcessor.h
+#    Source/PluginEditor.cpp
+#    Source/PluginEditor.h
+#)
 
-# Enlazar con JUCE y GTK
+# Enlazar con JUCE, GTK y ahora también libcurl
 target_link_libraries(Mix3DPlugin PRIVATE
     juce::juce_audio_processors
     juce::juce_audio_utils
     juce::juce_gui_extra
     ${GTK3_LIBRARIES}
+    CURL::libcurl
 )
+
+# Enlazar con JUCE y GTK
+#target_link_libraries(Mix3DPlugin PRIVATE
+#    juce::juce_audio_processors
+#    juce::juce_audio_utils
+#    juce::juce_gui_extra
+#    ${GTK3_LIBRARIES}
+#)
 
 target_include_directories(Mix3DPlugin PRIVATE
     ${GTK3_INCLUDE_DIRS}

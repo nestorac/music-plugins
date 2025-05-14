@@ -39,3 +39,10 @@ void Mix3DPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         right[i] = input[i] * gainR;
     }
 }
+
+
+// This must be a free function at global scope:
+juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
+{
+    return new Mix3DPluginAudioProcessor();
+}
