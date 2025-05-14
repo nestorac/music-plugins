@@ -12,6 +12,10 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 pkg_check_modules(WEBKIT2GTK REQUIRED webkit2gtk-4.1)
 
+# Ensure the WebKit include dirs are visible to all targets
+include_directories(${WEBKIT2GTK_INCLUDE_DIRS})
+
+
 juce_add_plugin(Mix3DPlugin
     COMPANY_NAME "YourCompany"
     IS_SYNTH FALSE
