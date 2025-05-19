@@ -27,23 +27,9 @@ juce_add_plugin(Mix3DPlugin
     FORMATS VST3
     PRODUCT_NAME "Mix3DPlugin"
     SOURCES
-      PluginProcessor.cpp
-      PluginEditor.cpp
+      src/PluginProcessor.cpp
+      src/PluginEditor.cpp
 )
-
-# Add your plugin code into the SharedCode library
-#target_sources(Mix3DPlugin PRIVATE
-#    Source/PluginProcessor.cpp
-#    Source/PluginEditor.cpp
-#)
-
-# ATENCIÓN: Solo tus fuentes aquí
-#target_sources(Mix3DPlugin PRIVATE
-#    Source/PluginProcessor.cpp
-#    Source/PluginProcessor.h
-#    Source/PluginEditor.cpp
-#    Source/PluginEditor.h
-#)
 
 # Enlazar con JUCE, GTK y ahora también libcurl
 target_link_libraries(Mix3DPlugin PRIVATE
@@ -54,13 +40,10 @@ target_link_libraries(Mix3DPlugin PRIVATE
     CURL::libcurl
 )
 
-# Enlazar con JUCE y GTK
-#target_link_libraries(Mix3DPlugin PRIVATE
-#    juce::juce_audio_processors
-#    juce::juce_audio_utils
-#    juce::juce_gui_extra
-#    ${GTK3_LIBRARIES}
-#)
+target_sources(Mix3DPlugin PRIVATE
+  src/PluginProcessor.cpp
+  src/PluginEditor.cpp
+)
 
 target_include_directories(Mix3DPlugin PRIVATE
     ${GTK3_INCLUDE_DIRS}

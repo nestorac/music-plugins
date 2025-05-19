@@ -40,9 +40,13 @@ void Mix3DPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     }
 }
 
-
-// This must be a free function at global scope:
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new Mix3DPluginAudioProcessor();
+}
+
+juce::AudioProcessorEditor* Mix3DPluginAudioProcessor::createEditor()
+{
+    // return your editor, passing *this to its constructor:
+    return new Mix3DPluginAudioProcessorEditor (*this);
 }
