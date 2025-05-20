@@ -3,11 +3,19 @@
 Mix3DPluginAudioProcessorEditor::Mix3DPluginAudioProcessorEditor (Mix3DPluginAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
-    addAndMakeVisible(xSlider);
-    xSlider.setSliderStyle(juce::Slider::LinearHorizontal);
-    xSlider.setRange(-1.0, 1.0);
-    xSlider.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
-    xAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processor.parameters, "x", xSlider);
+    // **** SLIDER X ****
+    addAndMakeVisible (xSlider);
+    xSlider.setSliderStyle (juce::Slider::Rotary);
+    xSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 50, 20);
+    xAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+                   processor.parameters, "x", xSlider);
+
+    // **** SLIDER Z ****
+    addAndMakeVisible (zSlider);
+    zSlider.setSliderStyle (juce::Slider::Rotary);
+    zSlider.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 50, 20);
+    zAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+                   processor.parameters, "z", zSlider);
 
     setSize (400, 300);
 }
@@ -22,5 +30,10 @@ void Mix3DPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
 void Mix3DPluginAudioProcessorEditor::resized()
 {
-    xSlider.setBounds (40, 80, getWidth() - 80, 20);
+    auto area = getLocalBounds().reduced (20);
+
+    // coloca X y Z lado a lado
+    auto row = area.removeFromTop (area.getHeight() / 2);
+    xSlider.setBounds  (row.removeFromLeft (row.getWidth() / 2).reduced (10));
+    zSlider.setBounds  (row.reduced (10));
 }

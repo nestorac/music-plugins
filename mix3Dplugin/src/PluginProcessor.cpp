@@ -19,7 +19,7 @@ bool Mix3DPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
     auto inSet  = layouts.getMainInputChannelSet();
     auto outSet = layouts.getMainOutputChannelSet();
 
-    // allow mono→stereo and stereo→stereo only
+    // allow mono→stereo and stereo to stereo only
     return (outSet == juce::AudioChannelSet::stereo())
         && (inSet == juce::AudioChannelSet::mono() 
          || inSet == juce::AudioChannelSet::stereo());
@@ -27,33 +27,37 @@ bool Mix3DPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 
 void Mix3DPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
-    auto numCh   = buffer.getNumChannels();
-    auto numSamp = buffer.getNumSamples();
-    float x      = *xParam;
+    const int numCh   = buffer.getNumChannels();
+    const int numSamp = buffer.getNumSamples();
 
-    // you can still pan a summed signal, or pan each channel differently—
-    // here we’ll pan the summed mono to stereo, then add the original stereo on top:
+    float x = *xParam;
+    float z = *zParam;
+
+    // Mapeamos z ∈ [–1,1] a depthGain ∈ [1,0]:
+    //  z = –1 → depthGain = 1 (muy cerca / delante)
+    //  z = +1 → depthGain = 0 (muy lejos / atrás)
+    float depthGain = juce::jmap(z, -1.0f, 1.0f, 1.0f, 0.0f);
+
+    // Lectura de input (mono):
     auto* in0 = buffer.getReadPointer (0);
-    auto* in1 = buffer.getNumChannels() > 1
-                   ? buffer.getReadPointer (1)
-                   : buffer.getReadPointer (0);
+    auto* in1 = (numCh > 1) ? buffer.getReadPointer (1)
+                            : buffer.getReadPointer (0);
 
-    auto* out0 = buffer.getWritePointer (0);
-    auto* out1 = buffer.getWritePointer (1);
+    auto* outL = buffer.getWritePointer (0);
+    auto* outR = buffer.getWritePointer (1);
 
     for (int i = 0; i < numSamp; ++i)
     {
-        float monoIn = 0.5f * (in0[i] + in1[i]);
-        float gainL  = 0.5f * (1.0f - x);
-        float gainR  = 0.5f * (1.0f + x);
+        // Mezcla mono de ambas entradas
+        float inMono = 0.5f * (in0[i] + in1[i]);
 
-        // clear buffers (if you want pure panning)
-        out0[i] = monoIn * gainL;
-        out1[i] = monoIn * gainR;
+        // Pan lateral
+        float gainL = 0.5f * (1.0f - x);
+        float gainR = 0.5f * (1.0f + x);
 
-        // —or— add to the original stereo:
-        // out0[i] = in0[i] + monoIn * gainL;
-        // out1[i] = in1[i] + monoIn * gainR;
+        // Aplica profundidad
+        outL[i] = inMono * gainL * depthGain;
+        outR[i] = inMono * gainR * depthGain;
     }
 }
 
