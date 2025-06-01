@@ -5,12 +5,15 @@ project(Mix3DPlugin VERSION 0.0.1)
 set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_PREFIX_PATH "/opt/juce")
-find_package(JUCE CONFIG REQUIRED)
+add_subdirectory(/opt/juce JUCE)  # ¡Aquí JUCE se "incluye", no se busca!
+#find_package(JUCE CONFIG REQUIRED)
 
 # Buscar GTK explícitamente
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 pkg_check_modules(WEBKIT2GTK REQUIRED webkit2gtk-4.1)
+pkg_check_modules(FREETYPE REQUIRED freetype2)
+include_directories(${FREETYPE_INCLUDE_DIRS})
 
 # Ensure the WebKit include dirs are visible to all targets
 include_directories(${WEBKIT2GTK_INCLUDE_DIRS})
