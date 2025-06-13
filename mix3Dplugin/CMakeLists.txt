@@ -12,8 +12,11 @@ add_subdirectory(/opt/juce JUCE)  # ¡Aquí JUCE se "incluye", no se busca!
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 pkg_check_modules(WEBKIT2GTK REQUIRED webkit2gtk-4.1)
-pkg_check_modules(FREETYPE REQUIRED freetype2)
+
+include_directories(/usr/include/freetype2)
+find_package(Freetype REQUIRED)
 include_directories(${FREETYPE_INCLUDE_DIRS})
+target_link_libraries(juceaide ${FREETYPE_LIBRARIES})
 
 # Ensure the WebKit include dirs are visible to all targets
 include_directories(${WEBKIT2GTK_INCLUDE_DIRS})
